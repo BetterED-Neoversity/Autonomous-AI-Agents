@@ -1,0 +1,30 @@
+# python3 -m venv .venv && .venv/bin/pip install -r requirements.txt
+
+# mcp навмисно 1.x, а не 2.x. Гілка 2.0 вийшла щойно і ламає рівно те, що є
+# в цьому демо: FastMCP перейменовано на MCPServer (mcp.server.mcpserver),
+# а поля протоколу стали snake_case (inputSchema → input_schema). Крім того,
+# langchain-mcp-adapters 0.3.2 сам вимагає mcp<2.0.0, тож `pip install -U mcp`
+# просто зламає крок 2. Мігрувати — коли адаптери переїдуть на 2.x.
+# Стеля 1.28.x — від mcpadapt, через який crewai-tools піднімає MCP (bonus/).
+# На основному демо це не позначається: тести і всі кроки зелені на 1.28.1.
+mcp==1.28.1                     # FastMCP-сервер і stdio-клієнт (крок 1, тести)
+langchain-mcp-adapters==0.3.2   # MultiServerMCPClient: MCP tools → LangChain tools
+langchain==1.3.17               # create_agent (крок 2)
+langchain-core==1.6.0           # типи повідомлень, ToolMessage
+langgraph==1.2.11               # граф MAS, checkpointer, interrupt()
+langchain-google-genai==4.3.5   # провайдер за замовчуванням (безкоштовний AI Studio)
+langchain-openai==1.6.0         # запасний шлях: будь-який OpenAI-сумісний шлюз
+langsmith==0.11.1               # крок 7: трасування (приїжджає з langchain, фіксуємо явно)
+requests==2.34.2                # крок 7: REST LangSmith — вартість прогону і ціни моделей
+python-dotenv==1.2.3
+pytest==9.1.1                   # тести MCP-сервера і guardrails
+pytest-asyncio==1.4.0           # один async-тест транспортного рівня MCP
+
+# БОНУС (bonus/). Тягнуть близько гігабайта (chromadb, lancedb, torch-екосистема),
+# тому в класі лишаються закоментованими. Конфліктів з демо немає: версії нижче
+# перевірені в одному оточенні разом з усім, що вище (pip check чистий).
+# Потрібен бонус — просто розкоментуйте ці рядки і повторіть pip install.
+# crewai[tools]==1.15.17        # bonus/mas_crewai.py
+# crewai-tools[mcp]==1.15.17    # extra mcp = mcpadapt; без нього MCPServerAdapter не підніметься
+# google-adk==2.8.0             # bonus/adk_mcp_agent.py
+# litellm==1.98.0               # ADK ходить у OpenAI-сумісний шлюз через LiteLlm

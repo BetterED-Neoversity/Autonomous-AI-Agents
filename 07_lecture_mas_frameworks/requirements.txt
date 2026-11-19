@@ -1,0 +1,33 @@
+# Демо лекції 7 — чотири MAS-фреймворки в ОДНОМУ середовищі.
+#
+#   python3 -m venv .venv && .venv/bin/pip install -r requirements.txt
+#   cp .env.example .env      # вписати свій GOOGLE_API_KEY
+#   .venv/bin/python common.py    # перевірка, що ключ живий
+#
+# Версії тут зафіксовані не для краси: три з чотирьох пінів існують саме
+# через конфлікти залежностей. Розбір — у docs/VERSIONS_RU.md §4.
+
+# ── CrewAI ──────────────────────────────────────────────────────────────────
+# Конспект лекції називає 1.11.0, але з Agent Framework вона несумісна
+# (pip дає ResolutionImpossible). API конспекту в 1.15 не змінилось.
+crewai==1.15.16
+
+# ── Google ADK ──────────────────────────────────────────────────────────────
+# Лінія 2.x. SequentialAgent/ParallelAgent/LoopAgent з конспекту працюють,
+# але позначені DeprecationWarning на користь нового google.adk.workflow.
+google-adk==2.7.0
+
+# ── Microsoft Agent Framework ───────────────────────────────────────────────
+# Прийшов на зміну AutoGen (той заморожений на 0.7.5).
+# Мета-пакет `agent-framework` ставити НЕ можна: він тягне ~150 залежностей
+# (Azure, boto3, anthropic) і ламає CrewAI. Беремо лише потрібні частини.
+agent-framework-core==1.14.0
+agent-framework-gemini==1.0.0b260813
+agent-framework-orchestrations==1.1.0
+
+# ── OpenAI Agents SDK ───────────────────────────────────────────────────────
+# Рівно 0.20.0: версія 0.21 вимагає openai>=3, а CrewAI — openai<3.
+openai-agents==0.20.0
+
+# ── Спільне ─────────────────────────────────────────────────────────────────
+python-dotenv==1.2.2
